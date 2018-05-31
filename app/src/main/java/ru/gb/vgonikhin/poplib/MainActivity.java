@@ -4,7 +4,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import java.util.ArrayList;
 
@@ -14,6 +18,7 @@ import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -23,6 +28,10 @@ public class MainActivity extends AppCompatActivity
     LinearLayout mainLayout;
     @BindView(R.id.btn_just)
     Button justButton;
+    @BindView(R.id.text_view)
+    TextView textView;
+    @BindView(R.id.edit_text)
+    EditText editText;
 
     Observable<String> justObservable;
     Observable<String> iterableObservable;
@@ -67,6 +76,13 @@ public class MainActivity extends AppCompatActivity
         arrayList.add("item4");
         iterableObservable = Observable.fromIterable(arrayList);
         iterableObservable.subscribe(observer);
+
+        Disposable d = RxTextView.textChanges(editText).subscribe(new Consumer<CharSequence>() {
+            @Override
+            public void accept(CharSequence value) {
+                textView.setText(value);
+            }
+        });
     }
 
     @OnClick(R.id.btn_just)
@@ -74,4 +90,6 @@ public class MainActivity extends AppCompatActivity
     {
         Log.d(TAG, "just");
     }
+
+
 }
